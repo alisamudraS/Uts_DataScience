@@ -4,7 +4,6 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
-from scipy.stats import skew
 import plotly.express as px
 import gdown
 
@@ -267,7 +266,7 @@ st.divider()
 # ======================= 7) SKEWNESS ==================
 st.subheader("7) Skewness (kolom numerik)")
 if not num_df.empty:
-    sk_ser = num_df.apply(lambda s: skew(s.dropna())).sort_values(ascending=False)
+    sk_ser = num_df.apply(lambda s: s.dropna().skew()).sort_values(ascending=False)
     cA, cB = st.columns(2)
     cA.dataframe(
         sk_ser.head(10).to_frame("skewness").style.format("{:.3f}"),
