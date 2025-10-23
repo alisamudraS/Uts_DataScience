@@ -49,7 +49,7 @@ def preprocess(df_raw: pd.DataFrame) -> pd.DataFrame:
     for c in d.columns:
         if d[c].dtype == "object":
             try:
-                d[c] = pd.to_numeric(d[c], errors="ignore")
+                d[c] = pd.to_numeric(d[c])
             except Exception:
                 pass
 
