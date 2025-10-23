@@ -109,14 +109,14 @@ k2.metric("Jumlah Kolom", f"{df.shape[1]}")
 k3.metric("Missing (%)", f"{df_raw.isna().mean().mean()*100:.2f}%")
 k4.metric("Kolom Numerik", f"{num_df.shape[1]}")
 
-st.dataframe(df.head(), use_container_width=True, height=220)
+st.dataframe(df.head(), width="stretch", height=220)
 
 with st.expander("Deskripsi kolom (tipe & missing)"):
     desc = pd.DataFrame({
         "dtype": df_raw.dtypes.astype(str),
         "missing_%": (df_raw.isna().mean()*100).round(2),
     }).reset_index().rename(columns={"index":"column"})
-    st.dataframe(desc, use_container_width=True, height=320)
+    st.dataframe(desc, width="stretch", height=320)
 
 miss_rate = (df_raw.isna().mean()*100).sort_values(ascending=False).head(15)
 st.plotly_chart(
@@ -125,7 +125,7 @@ st.plotly_chart(
         labels={"index":"Kolom","value":"Missing (%)"},
         title="Top-15 Missing Value per Kolom"
     ),
-    use_container_width=True
+    width="stretch"
 )
 
 st.divider()
@@ -137,7 +137,7 @@ if "ethnicity" in df.columns and "insomnia_severity" in df.columns:
         pd.crosstab(df["ethnicity"], df["insomnia_severity"], normalize="index") * 100
     ).reindex(columns=SEVERITY_LABELS).fillna(0)
 
-    st.dataframe(eth_ct.round(2), use_container_width=True, height=320)
+    st.dataframe(eth_ct.round(2), width="stretch", height=320)
 
     st.plotly_chart(
         px.bar(
@@ -146,7 +146,7 @@ if "ethnicity" in df.columns and "insomnia_severity" in df.columns:
             x="ethnicity", y="Persentase", color="Severity", barmode="stack",
             title="Stacked % 5-Level Probabilitas per Etnis"
         ).update_layout(xaxis_tickangle=-30),
-        use_container_width=True
+        width="stretch"
     )
 
     topN = 10
@@ -159,7 +159,7 @@ if "ethnicity" in df.columns and "insomnia_severity" in df.columns:
             labels={sev:"Persentase", "ethnicity":"Etnis"}
         )
         fig.update_layout(xaxis_tickangle=-30)
-        cols[i].plotly_chart(fig, use_container_width=True)
+        cols[i].plotly_chart(fig, width="stretch")
 else:
     st.info("Kolom `ethnicity`/`insomnia_severity` tidak tersedia.")
 
@@ -192,14 +192,14 @@ for sev in SEVERITY_LABELS:
         st.info("Tidak ada data pada kategori ini.")
         continue
     top10 = ser.head(10).round(3).to_frame("Persentase (%)")
-    st.dataframe(top10, use_container_width=True, height=300)
+    st.dataframe(top10, width="stretch", height=300)
     st.plotly_chart(
         px.bar(
             top10.reset_index(), x="Persentase (%)", y="index",
             orientation="h", title=f"Top-10 Penyakit • {sev}",
             labels={"index":"Penyakit"}
         ),
-        use_container_width=True
+        width="stretch"
     )
 
 if disease_cols:
@@ -211,7 +211,7 @@ if disease_cols:
             heat_df, aspect="auto", color_continuous_scale="YlGnBu",
             title="Heatmap Proporsi Penyakit (%) per Kategori"
         ),
-        use_container_width=True
+        width="stretch"
     )
 
 st.divider()
@@ -236,7 +236,7 @@ for sev in SEVERITY_LABELS:
     rows.append({"Kategori": sev, **stats_usia_per_kategori(df, sev)})
 stat_df = pd.DataFrame(rows).round(3)
 
-st.dataframe(stat_df, use_container_width=True)
+st.dataframe(stat_df, width="stretch")
 
 melt1 = stat_df.melt(
     id_vars="Kategori", value_vars=["Mean","Median","Modus"],
@@ -247,7 +247,7 @@ st.plotly_chart(
         melt1, x="Kategori", y="Nilai", color="Stat",
         barmode="group", title="Mean • Median • Modus Usia per Kategori"
     ),
-    use_container_width=True
+    width="stretch"
 )
 
 melt2 = stat_df.melt(
@@ -259,7 +259,7 @@ st.plotly_chart(
         melt2, x="Kategori", y="Nilai", color="Stat",
         barmode="group", title="Varian • Standar Deviasi Usia per Kategori"
     ),
-    use_container_width=True
+    width="stretch"
 )
 
 st.divider()
@@ -271,11 +271,11 @@ if not num_df.empty:
     cA, cB = st.columns(2)
     cA.dataframe(
         sk_ser.head(10).to_frame("skewness").style.format("{:.3f}"),
-        use_container_width=True, height=280
+        width="stretch", height=280
     )
     cB.dataframe(
         sk_ser.tail(10).to_frame("skewness").style.format("{:.3f}"),
-        use_container_width=True, height=280
+        width="stretch", height=280
     )
     st.plotly_chart(
         px.bar(
@@ -283,7 +283,7 @@ if not num_df.empty:
             labels={"index":"Fitur","value":"Skewness"},
             title="Top 12 Fitur Paling Right-skew"
         ),
-        use_container_width=True
+        width="stretch"
     )
 else:
     st.info("Tidak ada kolom numerik untuk dihitung skewness.")
